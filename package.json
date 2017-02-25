@@ -35,7 +35,7 @@
   },
   "dependencies": {
     "check-node-version": "^1.1.2",
-    "kubernetes-client": "Collaborne/kubernetes-client#collaborne-3.1.0",
+    "kubernetes-client": "^3.7.0",
     "mongodb": "^2.2.24",
     "npm-warn-shrinkwrap": "^1.0.2",
     "yargs": "^6.6.0"

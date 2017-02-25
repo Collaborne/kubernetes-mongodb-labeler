@@ -74,6 +74,7 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 			let newStatus = 'UNKNOWN';
 			if (err) {
 				newStatus = 'ERROR';
+				console.error(`Error when checking the status: ${err.message}`);
 			} else if (typeof status.members !== 'undefined') {
 				const selfStatus = status.members.find(member => member.self);
 				if (selfStatus) {

@@ -36,15 +36,15 @@ if (argv.server) {
 		insecureSkipTlsVerify: argv.insecureSkipTlsVerify
 	};
 	if (argv.certificateAuthority) {
-		k8sConfig.ca = fs.readFileSync(argv.certificateAuthority);
+		k8sConfig.ca = fs.readFileSync(argv.certificateAuthority, 'utf8');
 	}
 	if (argv.token) {
 		k8sConfig.auth = { bearer: argv.token };
 	} else if (argv.username && argv.password) {
 		k8sConfig.auth = { user: argv.username, pass: argv.password };
 	} else if (argv.clientCertificate && argv.clientKey) {
-		k8sConfig.cert = fs.readFileSync(argv.clientCertificate);
-		k8sConfig.key = fs.readFileSync(argv.clientKey);
+		k8sConfig.cert = fs.readFileSync(argv.clientCertificate, 'utf8');
+		k8sConfig.key = fs.readFileSync(argv.clientKey, 'utf8');
 	}
 } else if (process.env.KUBERNETES_SERVICE_HOST) {
 	k8sConfig = Api.config.getInCluster();

@@ -1,0 +1,42 @@
+{
+  "name": "@collaborne/kubernetes-mongodb-labeler",
+  "version": "0.0.1",
+  "description": "Tool running inside a MongoDB pod to update pod labels with MongoDB information",
+  "main": "src/index.js",
+  "scripts": {
+    "install": "npm-warn-shrinkwrap",
+    "prepublish": "eslint src",
+    "postinstall": "check-node-version --package",
+    "test": "echo 'No tests yet'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Collaborne/kubernete-mongodb-labeler.git"
+  },
+  "keywords": [
+    "kubernetes",
+    "mongodb",
+    "label",
+    "watch",
+    "monitor"
+  ],
+  "author": "Collaborne B.V. <opensource@collaborne.com>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/Collaborne/kubernete-mongodb-labeler/issues"
+  },
+  "homepage": "https://github.com/Collaborne/kubernete-mongodb-labeler#readme",
+  "engines": {
+    "node": ">=6.9.0"
+  },
+  "devDependencies": {
+    "eslint": "^3.16.1"
+  },
+  "dependencies": {
+    "check-node-version": "^1.1.2",
+    "kubernetes-client": "Collaborne/kubernetes-client#collaborne-3.1.0",
+    "mongodb": "^2.2.24",
+    "npm-warn-shrinkwrap": "^1.0.2",
+    "yargs": "^6.6.0"
+  }
+}

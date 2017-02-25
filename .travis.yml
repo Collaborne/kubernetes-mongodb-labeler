@@ -1,0 +1,44 @@
+dist: trusty
+sudo: false
+group: beta
+
+language: node_js
+node_js:
+- node
+services:
+- docker
+cache:
+  directories:
+  - node_modules
+  - "$HOME/.cache/bower"
+  - "$HOME/.cache/pip"
+before_install:
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then BASE_NAME=${TRAVIS_BRANCH}; else BASE_NAME=pr${TRAVIS_PULL_REQUEST}; fi
+- NAME=`echo ${BASE_NAME} | tr -cd '[\-._[:alnum:]]'`
+- TS=`date +%Y%m%dT%H%M%S`
+- VERSION_TAG=${NAME}-${TS}-${TRAVIS_COMMIT}
+- TAGS="${NAME} ${VERSION_TAG}"
+- if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then TAGS="${TAGS} latest"; fi
+
+- pip install --user awscli | cat
+- eval `$HOME/.local/bin/aws ecr get-login --region eu-west-1`
+
+- "if [ -d node_modules ] && [ x$(cat node_modules/.last-node-version 2>/dev/null) != x$(node -e 'console.log(process.version)') ]; then npm rebuild && node -e 'console.log(process.version)' > node_modules/.last-node-version; fi"
+install:
+- npm install
+- npm prune && npm shrinkwrap && mkdir -p deploy && cp package.json npm-shrinkwrap.json deploy && cp -r src deploy/src && npm install --production --prefix deploy --ignore-scripts
+after_success:
+- docker build `echo ${TAGS} | sed -re "s,\b([-._[:alnum:]]+)\b,-t ${DOCKER_NAME}:\1,g"` .
+deploy:
+  provider: script
+  script: "${SHELL} ./travis-deploy.sh ${DOCKER_NAME} ${TAGS}"
+  on:
+    all_branches: true
+env:
+  global:
+    - DOCKER_NAME=499577160181.dkr.ecr.eu-west-1.amazonaws.com/collaborne/kubernetes-mongodb-labeler
+    - secure: "XVWYiqH58Glf7auihvpWVAu/pKVqFTzryQLb+rfWJfUjDqapUDHk+dhZl4Eao4/xl4YA9vNdlDSK2QW5qo9DyQePDQfU6iMoiBzDDEXXRF+LBYu6EKFrk5CXlNCtZ8sa2M/et+s5rkyusrVmoU/wFnS5Ay6Xm0V9Z7HekRQ1bALgOrXHI18nfAeNmUl6EwWYj1pO1igImDrNzWjaI7mzFlR2iW9cTxpal+YV/+IqmhE0KBzxIat5AiadZEIx182IVESs7Sj/ibfzQavCObbiH+QIrPjwPIqt5g47SJWAwhmJ0b6v1blyqEN6RtoZHbVBqs64n1iulEbPUNMK/HKDvMQCAUOLE72kcmGMediwAtWKPv3gWdTsa2NfnCDSgFwit9sT9gOBp0AjXWUS3UtXEQ8XmpgqV73MDTG/xVuHo9D0QBEnoyT1vJXdt+aNfQU0IprnoMhkK5kPrbdtOsTiHvoGK8CA3o4O27hdy9baOn1S/b2EAhbUMXqpM2QEnMpo/OZVCNszjenW8+dxWVVqxYVru9coyFMGhJCDgQOqGzY1y0CzwdaFd4LocdJQL8hta3oT0PjKQlXJ0hZFmb/NrJ2hW8ZTDriq5XssgaR1d6ZmaYFxdBeLVVB9FsIfgDJns74FGAcXO4E/eNPINMYuc6sY8Jp7uYh9sV0HK568L+A="
+    - secure: "JDUc42pGEdOScojOwq38f2WNfUi0zkEziG1CMw411YdNwfmeg+HVRv1sYcpHbprpMmRR1ftgqIrgQ89p0jzJ4eqDFW+XpuIag7QAXC2QhkqtCLDD39Iv1ka15LzN1Gzl777Rwqe81F6Y7vPbpWNG8xRvr6HyKgbPWQu20EV022DGBER2AxfOqMQYjdYXG3uFMKcUNqLDqMGpNyDiZGEGChTWnqAqxOmxaNeUQnMukx+8z+ArWgYBqF492BqhZKUPt4Apy3nDM1WlbDVz0mQQoYKBE55ej9lBWSt31adKEULRHhbU/cvPmvUkYfQDzAB/ir9Rykb6IEoa9Z5qSOoljNOi3sZp6PFZrbVzvxUJmovWUvzi9ntis17JuBOL2rLzAWnKzaI6u3FS7YvnTTikeuZKPRJd5c2mcRElfKzgdxWZKnaz4gJY7QUJcuEUru4sbSbx+xGZaLZzLEURlgWMpL7BqrKW4QUnOY1wHFcweTe2ddMMdvS8INe48Y1QvbJraK2NWs3VJ6mynG0aC/70ilZOiTPKwyxtLGiGn2FCf2FfbZ4pBGjDMmhHz3AzTpZjpThjYDB6TYx9htjLvYbpHdSGLnDuhAaah//H9V8japx2avZjXwCt/FGX6tWANiFN6Q9nfyj3ojPqsYTqLgOPnT/hjA572MI2/w8f5chnC74="
+    - secure: "bB5TVgckXEs3KZgxG07kC19NPzhljhdSLoAMu7X+mcgS84W349nHJiyMEM5aQAJ4YcJ4rcCHFJVc7SNmGpzRQ/XicHE5kCoxvsPWPDmQC/2pBlvqkU0kL6uC3SV/aqDhGCLqfmrVEtAwDDxvNDBntMKuUVdkfGFuLzqiRumAeh9ZjIUNRp9VXQ0mi7S4dFo3KgjCDSsERas1Dz65wsbYyTsIoRwDNg48Q0KcIipqsABd3wlaaWJvgiRJOgV5uLQ67UgtMvrISTXLLZXfHgNSkreFfa8hWH2K4B9q2tt4hxHgZA+EuofLdadfMb4M+h5PN8tpABt7q3Tq9832fyHsjc77ZDOfB2PlWX3x4xK2eRnBNW4SVDiB/CVHHNnByOndduQTnzNNcoRTFQEwuGY4DLt7bgVJA2qlbsr8afq+f2/X/OrzQ/oHjzJ1R4Ds0PbTtk6U3i6X6ajbvD9X1vBh+xjWm1pDle9kpURvs9PsO+ue/s1PRBc7CGGah43ej340EkQuLAPuFRUeRLbyohuszehesKybCge5pVebPKpAamzfsDBVu+DJnjCqTOdNSlIJA0wRxdV5vYz0Sa+f+sZSzKHys4YID1F+pkp/XZJEsj2MW+BJj4xLmzRP9JiqcVR4JlHJpzVp/we+/f6m6fuSZn+rBQqYLI6RQybmicd0eic="
+
+

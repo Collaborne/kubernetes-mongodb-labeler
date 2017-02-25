@@ -83,6 +83,10 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 			}
 
 			if (newStatus !== lastStatus) {
+				if (lastStatus) {
+					console.log(`Status for ${podName} changed from ${lastStatus} to ${newStatus}`);
+				}
+
 				// XXX: kubernetes-client forces us to a strategic merge patch
 				const patch = {
 					metadata: {

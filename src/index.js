@@ -48,6 +48,11 @@ if (argv.server) {
 	}
 } else if (process.env.KUBERNETES_SERVICE_HOST) {
 	k8sConfig = Api.config.getInCluster();
+	// Work-around for https://github.com/godaddy/kubernetes-client/pull/87
+	if (k8sConfig.cert) {
+		k8sConfig.ca = k8sConfig.cert;
+		delete k8sConfig.cert;
+	}
 } else {
 	console.error('Unknown Kubernetes API server');
 	process.exit(1);

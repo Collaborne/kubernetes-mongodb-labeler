@@ -1,5 +1,5 @@
 {
-  "name": "@collaborne/kubernetes-mongodb-labeler",
+  "name": "kubernetes-mongodb-labeler",
   "version": "1.0.1",
   "description": "Tool running inside a MongoDB pod to update pod labels with MongoDB information",
   "main": "src/index.js",

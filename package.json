@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Collaborne/kubernete-mongodb-labeler.git"
+    "url": "git+https://github.com/Collaborne/kubernetes-mongodb-labeler.git"
   },
   "keywords": [
     "kubernetes",
@@ -24,9 +24,9 @@
   "author": "Collaborne B.V. <opensource@collaborne.com>",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/Collaborne/kubernete-mongodb-labeler/issues"
+    "url": "https://github.com/Collaborne/kubernetes-mongodb-labeler/issues"
   },
-  "homepage": "https://github.com/Collaborne/kubernete-mongodb-labeler#readme",
+  "homepage": "https://github.com/Collaborne/kubernetes-mongodb-labeler#readme",
   "engines": {
     "node": ">=6.9.0"
   },

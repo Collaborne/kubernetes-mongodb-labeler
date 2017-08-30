@@ -21,7 +21,7 @@ before_install:
 - if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then TAGS="${TAGS} latest"; fi
 
 - pip install --user awscli | cat
-- eval `$HOME/.local/bin/aws ecr get-login --region eu-west-1`
+- eval `$HOME/.local/bin/aws ecr get-login --region eu-west-1 --no-include-email`
 
 - "if [ -d node_modules ] && [ x$(cat node_modules/.last-node-version 2>/dev/null) != x$(node -e 'console.log(process.version)') ]; then npm rebuild && node -e 'console.log(process.version)' > node_modules/.last-node-version; fi"
 install:

@@ -2,6 +2,8 @@
 
 'use strict';
 
+const debug = require('debug-levels')('kubernetes-mongodb-labeler');
+
 const argv = require('yargs')
 	// Options and descriptions matching kubectl
 	.alias('s', 'server').describe('s', 'The address and port of the Kubernetes API server')
@@ -17,7 +19,7 @@ const argv = require('yargs')
 
 const podName = argv._.length === 1 ? argv._[0] : null;
 if (!podName) {
-	console.error(`Usage: ${process.argv0} POD-NAME`);
+	debug.error(`Usage: ${process.argv0} POD-NAME`);
 	process.exit(1);
 }
 
@@ -54,7 +56,7 @@ if (argv.server) {
 		delete k8sConfig.cert;
 	}
 } else {
-	console.error('Unknown Kubernetes API server');
+	debug.error('Unknown Kubernetes API server');
 	process.exit(1);
 }
 if (argv.namespace) {
@@ -64,7 +66,7 @@ const k8s = new Api.Core(k8sConfig);
 
 MongoClient.connect(mongoDbUrl, function(err, db) {
 	if (err) {
-		console.log(`Cannot connect to MongoDB at ${mongoDbUrl}: ${err.message}`);
+		debug.error(`Cannot connect to MongoDB at ${mongoDbUrl}: ${err.message}`);
 		process.exit(1);
 	}
 
@@ -74,7 +76,7 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 			let newStatus = 'UNKNOWN';
 			if (err) {
 				newStatus = 'ERROR';
-				console.error(`Error when checking the status: ${err.message}`);
+				debug.warn(`Error when checking the status: ${err.message}`);
 			} else if (typeof status.members !== 'undefined') {
 				const selfStatus = status.members.find(member => member.self);
 				if (selfStatus) {
@@ -84,7 +86,7 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 
 			if (newStatus !== lastStatus) {
 				if (lastStatus) {
-					console.log(`Status for ${podName} changed from ${lastStatus} to ${newStatus}`);
+					debug.log(`Status for ${podName} changed from ${lastStatus} to ${newStatus}`);
 				}
 
 				// XXX: kubernetes-client forces us to a strategic merge patch
@@ -97,7 +99,7 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 				};
 				k8s.ns.pod(podName).patch({ body: patch }, function(err, result) {
 					if (err) {
-						console.warn(`Error when updating label: ${err.message}`);
+						debug.warn(`Error when updating label: ${err.message}`);
 						return;
 					}
 					lastStatus = newStatus;

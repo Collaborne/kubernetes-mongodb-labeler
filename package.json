@@ -1,6 +1,6 @@
 {
   "name": "kubernetes-mongodb-labeler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Tool running inside a MongoDB pod to update pod labels with MongoDB information",
   "main": "src/index.js",
   "scripts": {

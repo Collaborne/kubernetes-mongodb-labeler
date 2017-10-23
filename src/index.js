@@ -87,6 +87,8 @@ MongoClient.connect(mongoDbUrl, function(err, db) {
 			if (newStatus !== lastStatus) {
 				if (lastStatus) {
 					debug.log(`Status for ${podName} changed from ${lastStatus} to ${newStatus}`);
+				} else {
+					debug.log(`Status for ${podName} is ${newStatus}`);
 				}
 
 				// XXX: kubernetes-client forces us to a strategic merge patch

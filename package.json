@@ -34,7 +34,7 @@
     "eslint": "^4.0.0"
   },
   "dependencies": {
-    "check-node-version": "^2.0.1",
+    "check-node-version": "^3.0.0",
     "debug-levels": "^0.2.0",
     "kubernetes-client": "^3.7.0",
     "mongodb": "^2.2.24",

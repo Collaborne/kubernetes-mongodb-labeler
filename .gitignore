@@ -1,8 +1,10 @@
 /node_modules/
 npm-debug.log
-npm-shrinkwrap.json
 *.orig
 *.rej
 *.porig
 /deploy/
 
+npm-shrinkwrap.json
+package-lock.json
+yarn.lock

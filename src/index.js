@@ -23,6 +23,7 @@ if (!podName) {
 	process.exit(1);
 }
 
+const {extractDbName} = require('./utils');
 const MongoClient = require('mongodb').MongoClient;
 const Api = require('kubernetes-client');
 const timers = require('timers');
@@ -64,11 +65,14 @@ if (argv.namespace) {
 }
 const k8s = new Api.Core(k8sConfig);
 
-MongoClient.connect(mongoDbUrl, function(err, db) {
+MongoClient.connect(mongoDbUrl, function(err, client) {
 	if (err) {
 		debug.error(`Cannot connect to MongoDB at ${mongoDbUrl}: ${err.message}`);
 		process.exit(1);
 	}
+
+	const dbName = extractDbName(mongoDbUrl);
+	const db = client.db(dbName);
 
 	let lastStatus = '';
 	timers.setInterval(function() {

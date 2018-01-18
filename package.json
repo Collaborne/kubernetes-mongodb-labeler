@@ -7,7 +7,7 @@
     "install": "npm-warn-shrinkwrap",
     "prepublish": "eslint src test",
     "postinstall": "check-node-version --package",
-    "test": "node ${_NODE_ARGS} $(npm bin)/_mocha --recursive test/**/*.spec.js",
+    "test": "nyc mocha test/**/*.spec.js",
     "start": "node src/index.js"
   },
   "repository": {
@@ -33,7 +33,8 @@
   "devDependencies": {
     "chai": "^4.1.2",
     "eslint": "^4.0.0",
-    "mocha": "^5.0.0"
+    "mocha": "^5.0.0",
+    "nyc": "^11.4.0"
   },
   "dependencies": {
     "check-node-version": "^3.0.0",

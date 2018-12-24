@@ -39,7 +39,7 @@
   "dependencies": {
     "check-node-version": "^3.0.0",
     "debug-levels": "^0.2.0",
-    "kubernetes-client": "^4.0.0",
+    "kubernetes-client": "^6.6.1",
     "mongodb": "^3.0.1",
     "npm-warn-shrinkwrap": "^1.0.2",
     "yargs": "^12.0.1"

@@ -34,7 +34,7 @@
     "chai": "^4.1.2",
     "eslint": "^5.0.0",
     "mocha": "^6.0.0",
-    "nyc": "^13.2.0"
+    "nyc": "^14.0.0"
   },
   "dependencies": {
     "check-node-version": "^3.0.0",
